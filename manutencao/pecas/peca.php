@@ -1,0 +1,65 @@
+<?php
+require_once('../template.php');
+if (!isset($TPL)) {
+	$TPL = new Template();
+	$TPL->PageTitle = "Peça";
+	$TPL->ContentBody = __FILE__;
+	include "../header.php";
+	exit;
+}
+include('../conexao.php');
+$id_peca = $_SERVER['REQUEST_URI'];
+$id_peca_int = preg_replace("/[^0-9]/", "", $id_peca);
+
+$sql = "SELECT * FROM hardware WHERE id_hardware = '$id_peca_int'";
+$result = $conn->query($sql);
+?>
+<h1>Peça</h1>
+<a href="<?php echo $TPL->base_url . 'pecas/'; ?>pecas.php">Voltar para Peças</a>
+<hr>
+<?php
+if ($result->num_rows > 0) {
+	while($row = $result->fetch_assoc()) {
+		if($row["tipo_hardware"] == "1"){
+			$row["tipo_hardware"] = "Placa mãe";
+		}else if($row["tipo_hardware"] == "2"){
+			$row["tipo_hardware"] = "Fonte de Alimentação";
+		}else if($row["tipo_hardware"] == "3"){
+			$row["tipo_hardware"] = "Memoria ram";
+		}else if($row["tipo_hardware"] == "4"){
+			$row["tipo_hardware"] = "Processador";
+		}else if($row["tipo_hardware"] == "5"){
+			$row["tipo_hardware"] = "HD";
+		}else if($row["tipo_hardware"] == "6"){
+			$row["tipo_hardware"] = "Placa de Vídeo";
+		}else if($row["tipo_hardware"] == "7"){
+			$row["tipo_hardware"] = "Placa de rede Ethernet";
+		}else if($row["tipo_hardware"] == "8"){
+			$row["tipo_hardware"] = "Placa de rede Wireless";
+		}else if($row["tipo_hardware"] == "9"){
+			$row["tipo_hardware"] = "Placa USB";
+		}else if($row["tipo_hardware"] == "10"){
+			$row["tipo_hardware"] = "Gabinete";
+		}else if($row["tipo_hardware"] == "11"){
+			$row["tipo_hardware"] = "Outro";
+		}
+		?>
+		<div class="col-md-12">
+			<div class="col-md-10">
+				<h2> <?php echo $row["tipo_hardware"] . " - " . $row["marca_hardware"]; ?> </h2>
+			</div>
+			<div class="col-md-9">
+				<h4> <?php echo $row["modelo_hardware"]; ?> </h4>
+			</div>
+			<div class="col-md-12">
+				<p><strong>Descrição:</strong><br> <?php echo nl2br($row["descricao_hardware"]); ?> </p>
+			</div>
+		</div>
+		
+		<?php 
+	}
+} else {
+	echo "<h2>Erro ao encontrar os dados desta peça</h2>";
+}
+$conn->close();
+?>
