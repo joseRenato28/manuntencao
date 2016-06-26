@@ -46,12 +46,16 @@ if ($result->num_rows > 0){
 		?>
 		<div class="col-md-10">
 			<h4> Placa mãe </h4>
-			<h5> <?php echo $row["marca_hardware"] . " - ". $row["modelo_hardware"] ?> </h5>
+			<h5> <?php echo "<a href='".$TPL->base_url."pecas/peca.php/".$row["id_hardware"]."'>".$row["marca_hardware"] . " - ". $row["modelo_hardware"]."</a>"; ?> </h5>
 		</div>
 		<?php
 	}
 }else{
-	echo "<h2>Erro ao encontrar os dados da placa mãe deste computador";
+	?>
+		<div class="col-md-10">
+			<h5 style="color:#b30000">Não foi possivel encontrar os dados da placa mãe</h5>
+		</div>
+	<?php
 }
 
 // fonte de alimentação
@@ -62,12 +66,16 @@ if ($result->num_rows > 0){
 		?>
 		<div class="col-md-10">
 			<h4> Fonte de alimentação </h4>
-			<h5> <?php echo $row["marca_hardware"] . " - ". $row["modelo_hardware"] ?> </h5>
+			<h5> <?php echo "<a href='".$TPL->base_url."pecas/peca.php/".$row["id_hardware"]."'>".$row["marca_hardware"] . " - ". $row["modelo_hardware"]."</a>"; ?> </h5>
 		</div>
 		<?php
 	}
 }else{
-	echo "<h2>Erro ao encontrar os dados da fonte de alimentação deste computador";
+		?>
+		<div class="col-md-10">
+			<h5 style="color:#b30000">Não foi possivel encontrar os dados da fonte de alimentação</h5>
+		</div>
+	<?php
 }
 
 // memoria ram
@@ -78,12 +86,16 @@ if ($result->num_rows > 0){
 		?>
 		<div class="col-md-10">
 			<h4> Memoria ram </h4>
-			<h5> <?php echo $row["marca_hardware"] . " - ". $row["modelo_hardware"] . " | quandia - ". $row["memoria_quantia"];?> </h5>
+			<h5> <?php echo "<a href='".$TPL->base_url."pecas/peca.php/".$row["id_hardware"]."'>".$row["marca_hardware"] . " - ". $row["modelo_hardware"]. " | quandia - ". $row["memoria_quantia"]."</a>"; ?> </h5>
 		</div>
 		<?php
 	}
 }else{
-	echo "<h2>Erro ao encontrar os dados da memoria ram deste computador";
+		?>
+		<div class="col-md-10">
+			<h5 style="color:#b30000">Não foi possivel encontrar os dados da memoria ram</h5>
+		</div>
+	<?php
 }
 
 // processador
@@ -94,12 +106,16 @@ if ($result->num_rows > 0){
 		?>
 		<div class="col-md-10">
 			<h4> Processador </h4>
-			<h5> <?php echo $row["marca_hardware"] . " - ". $row["modelo_hardware"];?> </h5>
+			<h5> <?php echo "<a href='".$TPL->base_url."pecas/peca.php/".$row["id_hardware"]."'>".$row["marca_hardware"] . " - ". $row["modelo_hardware"]."</a>"; ?> </h5>
 		</div>
 		<?php
 	}
 }else{
-	echo "<h2>Erro ao encontrar os dados do processador deste computador";
+		?>
+		<div class="col-md-10">
+			<h5 style="color:#b30000">Não foi possivel encontrar os dados do processador</h5>
+		</div>
+	<?php
 }
 
 // HD
@@ -110,12 +126,16 @@ if ($result->num_rows > 0){
 		?>
 		<div class="col-md-10">
 			<h4> HD </h4>
-			<h5> <?php echo $row["marca_hardware"] . " - ". $row["modelo_hardware"] . " | quandia - ". $row["hd_quantia"];?> </h5>
+			<h5> <?php echo "<a href='".$TPL->base_url."pecas/peca.php/".$row["id_hardware"]."'>".$row["marca_hardware"] . " - ". $row["modelo_hardware"]. " | quandia - ". $row["hd_quantia"]."</a>"; ?> </h5>
 		</div>
 		<?php
 	}
 }else{
-	echo "<h2>Erro ao encontrar os dados do HD deste computador";
+		?>
+		<div class="col-md-10">
+			<h5 style="color:#b30000">Não foi possivel encontrar os dados do HD</h5>
+		</div>
+	<?php
 }
 
 // off-board
@@ -126,7 +146,7 @@ if ($result->num_rows > 0){
 		?>
 		<div class="col-md-10">
 			<h4> Placa off-board </h4>
-			<h5> <?php echo $row["marca_hardware"] . " - ". $row["modelo_hardware"];?> </h5>
+			<h5> <?php echo "<a href='".$TPL->base_url."pecas/peca.php/".$row["id_hardware"]."'>".$row["marca_hardware"] . " - ". $row["modelo_hardware"]."</a>"; ?> </h5>
 		</div>
 		<?php
 	}
@@ -140,21 +160,21 @@ if ($result->num_rows > 0){
 		?>
 		<div class="col-md-10">
 			<h4> Gabinete </h4>
-			<h5> <?php echo $row["marca_hardware"] . " - ". $row["modelo_hardware"];?> </h5>
+			<h5> <?php echo "<a href='".$TPL->base_url."pecas/peca.php/".$row["id_hardware"]."'>".$row["marca_hardware"] . " - ". $row["modelo_hardware"]."</a>"; ?> </h5>
 		</div>
 		<?php
 	}
 }
 
 // descrição
-$sql_descricao = "SELECT hardware.* FROM pc inner join hardware on pc.descricao_pc = hardware.id_hardware";
+$sql_descricao = "SELECT descricao_pc FROM pc WHERE id_pc = '$id_pc_int'";
 $result = $conn->query($sql_descricao);
 if ($result->num_rows > 0){
 	while($row = $result->fetch_assoc()){
 		?>
 		<div class="col-md-10">
 			<h4> Descrição </h4>
-			<p> <?php echo $row["descricao_pc"];?> </p>
+			<p> <?php echo nl2br($row["descricao_pc"]);?> </p>
 		</div>
 		<?php
 	}
