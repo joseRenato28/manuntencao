@@ -1,6 +1,6 @@
 <?php
 require_once('../template.php');
-if (!isset($TPL)) {
+if (!isset($TPL)){
 	$TPL = new Template();
 	$TPL->PageTitle = "Alterar Peça";
 	$TPL->ContentBody = __FILE__;
@@ -19,7 +19,7 @@ $result = $conn->query($sql);
 		$("#alterar-peca").submit(function(e){
 			e.preventDefault();
 			$.ajax({
-				url: '<?php echo $TPL->base_url . 'pecas/'; ?>do-alterar-peca.php',
+				url: "do-alterar-peca.php",
 				type: "POST",
 				data: $("#alterar-peca").serialize(),
 				success: function(data){
@@ -34,14 +34,46 @@ $result = $conn->query($sql);
 				}
 			});
 		});
+		$("body").on("click", "#cadastrar-mesmo-assim", function(){
+			$.ajax({
+				url: 'do-add-peca.php',
+				type: "POST",
+				data: {
+					cadastrar: 1,
+					tipo: $("#tipo").val(),
+					marca: $("#marca").val(),
+					modelo: $("#modelo").val(),
+					descricao: $("#descricao").val()
+				},
+				success: function(data){
+					if(data == 1){
+						var check = confirm("Peça cadastrada com sucesso!Deseja cadastrar outra?");
+						if(check){
+							$("#add-peca").each(function(){
+								this.reset();
+								$("#myModal").modal('hide');
+							});
+						}else{
+							window.location.href = "pecas.php";
+						}
+					}else{
+						alert(data);
+					}
+				},
+				error: function(textStatus, data){
+					console.log(data);
+					alert("Ocorreu algum erro" + textStatus);
+				}
+			});
+		});
 	});
 </script>
 <h1>Alterar Peça</h1>
 <a href="<?php echo $TPL->base_url . 'pecas/'; ?>pecas.php">Voltar para Peças</a>
 <hr>
 <?php
-if ($result->num_rows > 0) {
-	while($row = $result->fetch_assoc()) {
+if ($result->num_rows > 0){
+	while($row = $result->fetch_assoc()){
 
 		?>
 		<div>
@@ -81,8 +113,11 @@ if ($result->num_rows > 0) {
 		
 		<?php 
 	}
-} else {
+}else{
 	echo "<h2>Erro ao encontrar os dados desta peça</h2>";
 }
 $conn->close();
 ?>
+<div id="div-modal">
+	
+</div>

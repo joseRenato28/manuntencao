@@ -7,7 +7,7 @@ $id_peca = $_POST['id_peca'];
 if($id_peca == null){
 	echo "ocorreu algum erro para recuperar o número idenficador";
 }else{
-	$check = "SELECT * FROM pc WHERE placa_mae_pc = '$id_peca' or processador_pc = '$id_peca' or memoria_pc = '$id_peca' or 	fonte_pc = '$id_peca' or hd_pc = '$id_peca' or gabinete_pc = '$id_peca' or off_board_pc = '$id_peca'";
+	$check = "SELECT * FROM pc WHERE placa_mae_pc = '$id_peca' or processador_pc = '$id_peca' or memoria_pc = '$id_peca' or fonte_pc = '$id_peca' or hd_pc = '$id_peca' or gabinete_pc = '$id_peca' or off_board_pc = '$id_peca'";
 	$result = $conn->query($check);
 	if ($result->num_rows > 0){
 		echo "Há computadores usando esta peça. Impossivel deletar ela!";

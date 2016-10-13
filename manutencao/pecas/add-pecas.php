@@ -27,6 +27,38 @@ if (!isset($TPL)) {
 							window.location.href = "pecas.php";
 						}
 					}else{
+						$("#div-modal").html(data);
+					}
+				},
+				error: function(textStatus, data){
+					console.log(data);
+					alert("Ocorreu algum erro" + textStatus);
+				}
+			});
+		});
+		$("body").on("click", "#cadastrar-mesmo-assim", function(){
+			$.ajax({
+				url: 'do-add-peca.php',
+				type: "POST",
+				data: {
+					cadastrar: 1,
+					tipo: $("#tipo").val(),
+					marca: $("#marca").val(),
+					modelo: $("#modelo").val(),
+					descricao: $("#descricao").val()
+				},
+				success: function(data){
+					if(data == 1){
+						var check = confirm("Peça cadastrada com sucesso!Deseja cadastrar outra?");
+						if(check){
+							$("#add-peca").each(function(){
+								this.reset();
+								$("#myModal").modal('hide');
+							});
+						}else{
+							window.location.href = "pecas.php";
+						}
+					}else{
 						alert(data);
 					}
 				},
@@ -69,8 +101,11 @@ if (!isset($TPL)) {
 		</div>
 		<div class="form-group">
 			<label for="descricao">Descrição:</label>
-			<textarea class="form-control" name="descricao" id="observacoes"></textarea>
+			<textarea class="form-control" name="descricao" id="descricao"></textarea>
 		</div>
 		<button type="submit" class="btn btn-default">Cadastrar</button>
 	</form>
+</div>
+<div id="div-modal">
+	
 </div>

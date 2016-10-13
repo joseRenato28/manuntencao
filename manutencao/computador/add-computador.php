@@ -11,6 +11,34 @@ if (!isset($TPL)) {
 ?>
 <script type="text/javascript">
 	$(document).ready(function(){
+		function removeRequired(id){
+			$(id+"> div > input").each(function(){
+				$(this).removeAttr("required");
+			});
+		}
+		function addRequired(id){
+			$(id+"> div > input").each(function(){
+				$(this).attr("required", "true");
+			});
+		}
+		$("form").on("change", "#tipo", function(){
+			if($(this).val() == "1"){
+				$("#notebook").hide();
+				$("#computador").show();
+
+				removeRequired("#notebook");
+				addRequired("#computador");
+			}else if($(this).val() == "2"){
+				$("#computador").hide();
+				$("#notebook").show();
+
+				removeRequired("#computador");
+				addRequired("#notebook");
+			}else{
+				alert("Tipo de computador invalido");
+				return false;
+			}
+		});
 		$("#add-computador").submit(function(e){
 			e.preventDefault();
 			$.ajax({
@@ -71,27 +99,12 @@ if (!isset($TPL)) {
 					?>
 				</select>
 			</div>
-			<div class="form-group">
-				<label for="setor">Placa mãe: *</label>
-				<select name="placa-mae-pc" required class="form-control" id="placa-mae-pc">
-					<?php
-					$sql = "SELECT * FROM hardware WHERE tipo_hardware = 1";
-					$result = $conn->query($sql);
-
-					if ($result->num_rows > 0) {
-						while($row = $result->fetch_assoc()) { ?>
-							<option value="<?php echo $row["id_hardware"]; ?>"> <?php echo $row["marca_hardware"]. " - " . $row["modelo_hardware"]; ?> </option>
-
-							<?php }
-						}
-						?>
-					</select>
-				</div>
+			<div id="computador">
 				<div class="form-group">
-					<label for="setor">Fonte de Alimentação: *</label>
-					<select name="fonte-pc" required class="form-control" id="fonte-pc">
+					<label for="setor">Placa mãe: *</label>
+					<select name="placa-mae-pc" required class="form-control" id="placa-mae-pc">
 						<?php
-						$sql = "SELECT * FROM hardware WHERE tipo_hardware = 2";
+						$sql = "SELECT * FROM hardware WHERE tipo_hardware = 1";
 						$result = $conn->query($sql);
 
 						if ($result->num_rows > 0) {
@@ -104,11 +117,12 @@ if (!isset($TPL)) {
 						</select>
 					</div>
 					<div class="form-group">
-						<label for="setor">Memoria Ram: *</label>
-						<select name="memoria-ram-pc" required class="form-control" id="memoria-ram-pc">
+						<label for="setor">Fonte de Alimentação: *</label>
+						<select name="fonte-pc" required class="form-control" id="fonte-pc">
 							<?php
-							$sql = "SELECT * FROM hardware WHERE tipo_hardware = 3";
+							$sql = "SELECT * FROM hardware WHERE tipo_hardware = 2";
 							$result = $conn->query($sql);
+
 							if ($result->num_rows > 0) {
 								while($row = $result->fetch_assoc()) { ?>
 									<option value="<?php echo $row["id_hardware"]; ?>"> <?php echo $row["marca_hardware"]. " - " . $row["modelo_hardware"]; ?> </option>
@@ -119,14 +133,10 @@ if (!isset($TPL)) {
 							</select>
 						</div>
 						<div class="form-group">
-							<label for="quantia-memoria-pc">Quantidade de pentes de memoria: *</label>
-							<input type="number" required name="quantia-memoria-pc" id="quantia-memoria-pc">
-						</div>
-						<div class="form-group">
-							<label for="setor">Processador: *</label>
-							<select name="processador-pc" required class="form-control" id="processador-pc">
+							<label for="setor">Memoria Ram: *</label>
+							<select name="memoria-ram-pc" required class="form-control" id="memoria-ram-pc">
 								<?php
-								$sql = "SELECT * FROM hardware WHERE tipo_hardware = 4";
+								$sql = "SELECT * FROM hardware WHERE tipo_hardware = 3";
 								$result = $conn->query($sql);
 								if ($result->num_rows > 0) {
 									while($row = $result->fetch_assoc()) { ?>
@@ -138,10 +148,14 @@ if (!isset($TPL)) {
 								</select>
 							</div>
 							<div class="form-group">
-								<label for="setor">HD: *</label>
-								<select name="hd-pc" required class="form-control" id="hd-pc">
+								<label for="quantia-memoria-pc">Quantidade de pentes de memoria: *</label>
+								<input type="number" required name="quantia-memoria-pc" id="quantia-memoria-pc">
+							</div>
+							<div class="form-group">
+								<label for="setor">Processador: *</label>
+								<select name="processador-pc" required class="form-control" id="processador-pc">
 									<?php
-									$sql = "SELECT * FROM hardware WHERE tipo_hardware = 5";
+									$sql = "SELECT * FROM hardware WHERE tipo_hardware = 4";
 									$result = $conn->query($sql);
 									if ($result->num_rows > 0) {
 										while($row = $result->fetch_assoc()) { ?>
@@ -153,13 +167,28 @@ if (!isset($TPL)) {
 									</select>
 								</div>
 								<div class="form-group">
-									<label for="quantia-hd-pc">Quantidade de HDs: *</label>
-									<input type="number" required name="quantia-hd-pc" id="quantia-hd-pc">
-								</div>
+									<label for="setor">HD: *</label>
+									<select name="hd-pc" required class="form-control" id="hd-pc">
+										<?php
+										$sql = "SELECT * FROM hardware WHERE tipo_hardware = 5";
+										$result = $conn->query($sql);
+										if ($result->num_rows > 0) {
+											while($row = $result->fetch_assoc()) { ?>
+												<option value="<?php echo $row["id_hardware"]; ?>"> <?php echo $row["marca_hardware"]. " - " . $row["modelo_hardware"]; ?> </option>
+
+												<?php }
+											}
+											?>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="quantia-hd-pc">Quantidade de HDs: *</label>
+										<input type="number" required name="quantia-hd-pc" id="quantia-hd-pc">
+									</div>
 									<div class="form-group">
 										<label for="setor">Placa off-board: </label>
 										<select name="off-pc" class="form-control" id="off-pc">
-										<option value="0" selected >Selecione algum dispositivo off-board</option>
+											<option value="0" selected >Selecione algum dispositivo off-board</option>
 											<?php
 											$sql = "SELECT * FROM hardware WHERE tipo_hardware in(6, 7, 8, 9, 11)";
 											$result = $conn->query($sql);
@@ -193,6 +222,21 @@ if (!isset($TPL)) {
 												<label for="descricao-pc">Descrição: </label>
 												<textarea class="form-control" name="descricao-pc" id="descricao-pc"></textarea>
 											</div>
-											<button type="submit" class="btn btn-default">Cadastrar</button>
-										</form>
-									</div>
+										</div>
+										<div id="notebook" style="display: none;">
+											<div class="form-group">
+												<label for="codigo-comptuador">Marca: *</label>
+												<input type="text" class="form-control" name="marca-comptuador" id="marca-comptuador">
+											</div>
+											<div class="form-group">
+												<label for="codigo-comptuador">Modelo: *</label>
+												<input type="text" class="form-control"  name="modelo-comptuador" id="modelo-comptuador">
+											</div>
+											<div class="form-group">
+												<label for="descricao-pc">Descrição: </label>
+												<textarea class="form-control" name="descricao-pc" id="descricao-pc"></textarea>
+											</div>
+										</div>
+										<button type="submit" class="btn btn-default">Cadastrar</button>
+									</form>
+								</div>

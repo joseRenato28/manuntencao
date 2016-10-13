@@ -14,9 +14,50 @@ $id_peca_int = preg_replace("/[^0-9]/", "", $id_peca);
 $sql = "SELECT * FROM hardware WHERE id_hardware = '$id_peca_int'";
 $result = $conn->query($sql);
 ?>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#menu-computador > ul > li").click(function(){
+			$("li").removeClass("active");
+			$(this).addClass("active");
+			var id = $(this).attr("id");
+			var pagina;
+
+			if(id == "descricao"){
+				$("#conteudo-secundario").html("");
+				$("#conteudo-primario").show();
+				return false;
+			}else if(id == "estatisticas"){
+				pagina = 'estatisticas-peca.php';
+			}else{
+				return false;
+			}
+
+			$.ajax({
+				type: "POST",
+				url: "../"+pagina,
+				data: {id_peca: $("#id_peca").val()},
+				success: function(data){
+					$("#conteudo-primario").hide();
+					$("#conteudo-secundario").html(data);
+				},
+				error: function(textStatus, data){
+					console.log(data);
+					alert("Ocorreu algum erro" + textStatus);
+				}
+			});
+		});
+
+	});
+</script>
 <h1>Peça</h1>
 <a href="<?php echo $TPL->base_url . 'pecas/'; ?>pecas.php">Voltar para Peças</a>
 <hr>
+<div id="menu-computador" class="col-md-3">
+	<ul class="nav nav-pills nav-stacked">
+	  <li id="descricao" class="active"><a href="#">Descrição</a></li>
+	  <li id="estatisticas"><a href="#">Estatísticas</a></li>
+	</ul>
+</div>
 <?php
 if ($result->num_rows > 0) {
 	while($row = $result->fetch_assoc()) {
@@ -44,7 +85,8 @@ if ($result->num_rows > 0) {
 			$row["tipo_hardware"] = "Outro";
 		}
 		?>
-		<div class="col-md-12">
+		<div id="conteudo-primario" class="col-md-9">
+			<input type="hidden" id="id_peca" value="<?php echo $row['id_hardware']; ?>"></input>
 			<div class="col-md-10">
 				<h2> <?php echo $row["tipo_hardware"] . " - " . $row["marca_hardware"]; ?> </h2>
 			</div>
@@ -63,3 +105,6 @@ if ($result->num_rows > 0) {
 }
 $conn->close();
 ?>
+<div id="conteudo-secundario">
+	
+</div>

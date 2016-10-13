@@ -1,5 +1,6 @@
 <?php
 require_once('template.php');
+$TPL->login();
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -16,6 +17,7 @@ require_once('template.php');
 	<script type="text/javascript" src="<?php echo $TPL->base_url; ?>assets/js/master.js"></script>
 	<title><?php if(isset($TPL->PageTitle)) { echo $TPL->PageTitle; } ?></title>
 	<?php if(isset($TPL->ContentHead)) { include $TPL->ContentHead; } ?>
+	
 </head>
 <body>
 	<nav class="navbar navbar-default">
@@ -28,24 +30,49 @@ require_once('template.php');
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#">Brand</a>
+				<a class="navbar-brand" href="#"><?php echo $_SESSION['nome_usuario']; ?></a>
 			</div>
 
 			<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					<li><a href="<?php echo $TPL->base_url; ?>home.php">Home <span class="sr-only">(current)</span></a></li>
-					<li><a href="<?php echo $TPL->base_url; ?>pecas/pecas.php">Peças</a></li>
-					<li><a href="<?php echo $TPL->base_url; ?>computador/computadores.php">Computadores</a></li>
-					<li><a href="<?php echo $TPL->base_url; ?>chamados/chamados.php">Chamados</a></li>
-					<li><a href="<?php echo $TPL->base_url; ?>consertos/consertos.php">Consertos</a></li>
-					<li><a href="<?php echo $TPL->base_url; ?>setor/setores.php">Setores</a></li>
+					<?php
+					include('conexao.php');
+					$id_usuario = $_SESSION["id_usuario"];
+					$nivel_usuario = $_SESSION["nivel_usuario"];
+					if($nivel_usuario == 2){
+						$sql = "SELECT menus.* FROM menus";
+
+						$result = $conn->query($sql);
+						if($result->num_rows > 0){
+							while($row = $result->fetch_assoc()){
+								?>
+								<li><a href="<?php echo $TPL->base_url.$row["link"]; ?>"><?php echo $row["nome_menu"]; ?></a></li>
+								<?php
+							}
+						}
+					}else{
+						$sql = "SELECT menus.* FROM menus inner join permissoes on menus.id_menu = permissoes.id_menu WHERE permissoes.id_usuario = '$id_usuario'";
+
+						$result = $conn->query($sql);
+						if($result->num_rows > 0){
+							while($row = $result->fetch_assoc()){
+								?>
+								<li><a href="<?php echo $TPL->base_url.$row["link"]; ?>"><?php echo $row["nome_menu"]; ?></a></li>
+								<?php
+							}
+						}
+						
+					}
+					?>
+					<li><a href="<?php echo $TPL->base_url;?>usuarios/sair.php">Sair</a></li>
 				</ul>
-				</div>
 			</div>
-		</nav>
-		<div id="content" class="container">
-			<?php if(isset($TPL->ContentBody)) { include $TPL->ContentBody; } ?>
 		</div>
-	</body>
-	</html>
+	</nav>
+	<div id="content" class="container">
+		<?php if(isset($TPL->ContentBody)) { include $TPL->ContentBody; } ?>
+	</div>
+</body>
+</html>
